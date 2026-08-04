@@ -19,4 +19,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
-          include_files: index.html,styles.css,app.js,templates.json,code_info/*.png,code_info/*.svg,README.md
