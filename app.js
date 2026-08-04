@@ -107,7 +107,7 @@ var recent = loadRecent();
 var paletteResults = [], paletteIndex = 0;
 var USERS_KEY = 'codebase_users', SESSION_KEY = 'codebase_session', FAVS_KEY = 'nesto_favs', RECENT_KEY = 'nesto_recent', THEME_KEY = 'nesto_theme';
 
-var threeState = { renderer: null, camera: null, scene: null, shapes: [], points: null, raf: 0, running: false, targetX: 0, targetY: 0, onResize: null };
+var threeState = { renderer: null, camera: null, scene: null, shapes: [], knot: null, streaks: null, streakData: [], raf: 0, running: false, targetX: 0, targetY: 0, onResize: null };
 
 /* ---------------- Helpers ---------------- */
 function $(id) { return document.getElementById(id); }
@@ -739,29 +739,36 @@ function init3D() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
 
-    var count = isMobile ? 750 : 1700;
-    var pos = new Float32Array(count * 3);
-    var col = new Float32Array(count * 3);
     var accent = hexToRgb(getAccent());
-    var palette = [[accent.r, accent.g, accent.b], [34, 211, 238], [167, 139, 250]];
-    for (var i = 0; i < count; i++) {
-      var r = 3 + Math.random() * 5.5;
-      var theta = Math.random() * Math.PI * 2;
-      var phi = Math.acos(2 * Math.random() - 1);
-      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * .55;
-      pos[i * 3 + 2] = r * Math.cos(phi) * .45 - 3;
-      var t = Math.random();
-      var c = t < .3 ? palette[0] : (t < .42 ? palette[1] : (t < .5 ? palette[2] : [255, 255, 255]));
-      var dim = .45 + Math.random() * .55;
-      col[i * 3] = c[0] / 255 * dim; col[i * 3 + 1] = c[1] / 255 * dim; col[i * 3 + 2] = c[2] / 255 * dim;
+    var accentHex = accent.r << 16 | accent.g << 8 | accent.b;
+
+    var knot = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(1.6, .55, 110, 18),
+      new THREE.MeshBasicMaterial({ color: accentHex, wireframe: true, transparent: true, opacity: .28, blending: THREE.AdditiveBlending, depthWrite: false })
+    );
+    knot.position.set(0, 0, -5);
+    knot.rotation.x = .65;
+    knot.rotation.y = -.35;
+    scene.add(knot);
+
+    var streakCount = isMobile ? 45 : 110;
+    var sPos = new Float32Array(streakCount * 6);
+    var streaksArr = new Array(streakCount);
+    for (var i = 0; i < streakCount; i++) {
+      var sx = (Math.random() - .5) * 16;
+      var sy = (Math.random() - .5) * 9;
+      var sz = (Math.random() - .5) * 12 - 4;
+      var sl = .6 + Math.random() * 1.6;
+      var dir = Math.atan2(Math.random() - .5, Math.random() - .5);
+      sPos[i * 6] = sx; sPos[i * 6 + 1] = sy; sPos[i * 6 + 2] = sz;
+      sPos[i * 6 + 3] = sx + Math.cos(dir) * sl; sPos[i * 6 + 4] = sy + Math.sin(dir) * sl; sPos[i * 6 + 5] = sz + sl * .5;
+      streaksArr[i] = { speed: .008 + Math.random() * .03, len: sl };
     }
-    var g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-    var m = new THREE.PointsMaterial({ size: .05, vertexColors: true, transparent: true, opacity: .85, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
-    var points = new THREE.Points(g, m);
-    scene.add(points);
+    var sGeo = new THREE.BufferGeometry();
+    sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+    var sMat = new THREE.LineBasicMaterial({ color: accentHex, transparent: true, opacity: .32, blending: THREE.AdditiveBlending, depthWrite: false });
+    var streaks = new THREE.LineSegments(sGeo, sMat);
+    scene.add(streaks);
 
     var shapes = [];
     var shapeMat = new THREE.MeshBasicMaterial({ color: accent.r << 16 | accent.g << 8 | accent.b, wireframe: true, transparent: true, opacity: .14 });
@@ -775,7 +782,8 @@ function init3D() {
     }
 
     threeState.scene = scene; threeState.camera = camera; threeState.renderer = renderer;
-    threeState.points = points; threeState.shapes = shapes;
+    threeState.knot = knot; threeState.streaks = streaks; threeState.streakData = streaksArr;
+    threeState.shapes = shapes;
 
     window.addEventListener('pointermove', function (e) {
       threeState.targetX = (e.clientX / window.innerWidth - .5) * 2;
@@ -794,7 +802,19 @@ function init3D() {
       camera.position.x += ((threeState.targetX * 1.15) - camera.position.x) * .035;
       camera.position.y += ((-threeState.targetY * .75) - camera.position.y) * .035;
       camera.lookAt(0, 0, -2);
-      points.rotation.y += .00035;
+      knot.rotation.y += .0016;
+      knot.rotation.z += .0006;
+      var sAttr = streaks.geometry.attributes.position;
+      var sArr = sAttr.array;
+      for (var i = 0; i < streakCount; i++) {
+        sArr[i * 6 + 2] += streaksArr[i].speed;
+        sArr[i * 6 + 5] += streaksArr[i].speed;
+        if (sArr[i * 6 + 2] > 6) {
+          sArr[i * 6 + 2] = -10;
+          sArr[i * 6 + 5] = -10 + streaksArr[i].len * .5;
+        }
+      }
+      sAttr.needsUpdate = true;
       shapes.forEach(function (sh) { sh.rotation.x += sh.userData.vx; sh.rotation.y += sh.userData.vy; sh.rotation.z += sh.userData.vz; });
       renderer.render(scene, camera);
       threeState.raf = requestAnimationFrame(frame);
@@ -820,11 +840,13 @@ function init3D() {
   }
 }
 function sync3DTheme() {
-  if (!threeState.renderer || !threeState.shapes.length) return;
+  if (!threeState.renderer) return;
   var accent = getAccent();
   var rgb = hexToRgb(accent);
   var hex = rgb.r << 16 | rgb.g << 8 | rgb.b;
   threeState.shapes.forEach(function (sh) { sh.material.color.setHex(hex); });
+  if (threeState.knot) threeState.knot.material.color.setHex(hex);
+  if (threeState.streaks) threeState.streaks.material.color.setHex(hex);
 }
 
 /* ---------------- Motion (GSAP) ---------------- */
