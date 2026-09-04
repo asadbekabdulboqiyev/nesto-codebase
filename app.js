@@ -137,10 +137,24 @@ function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
 function getSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch (e) { return null; } }
 function saveSession(s) { if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s)); else localStorage.removeItem(SESSION_KEY); }
 
+function hashPassword(pass) {
+  var hash = 0;
+  for (var i = 0; i < pass.length; i++) {
+    var chr = pass.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  var h = (Math.abs(hash) * 9301 + 49297).toString(16);
+  for (var j = 0; j < pass.length; j++) {
+    var c = pass.charCodeAt(j);
+    h = ((parseInt(h, 16) << 3) + c + parseInt(h.slice(-2), 16)).toString(16).slice(-8);
+  }
+  return h;
+}
 function register(name, email, pass) {
   var users = getUsers();
   if (users.find(function (u) { return u.email === email; })) return { ok: false, msg: 'Email allaqachon ro\'yxatdan o\'tgan' };
-  var user = { id: Date.now().toString(36), name: name, email: email, pass: btoa(pass), created: new Date().toISOString() };
+  var user = { id: Date.now().toString(36), name: name, email: email, pass: hashPassword(pass), created: new Date().toISOString() };
   users.push(user); saveUsers(users);
   currentUser = { id: user.id, name: user.name, email: user.email };
   saveSession(currentUser);
@@ -148,7 +162,7 @@ function register(name, email, pass) {
 }
 function login(email, pass) {
   var users = getUsers();
-  var user = users.find(function (u) { return u.email === email && u.pass === btoa(pass); });
+  var user = users.find(function (u) { return u.email === email && u.pass === hashPassword(pass); });
   if (!user) return { ok: false, msg: 'Email yoki parol xato' };
   currentUser = { id: user.id, name: user.name, email: user.email };
   saveSession(currentUser);
@@ -158,7 +172,10 @@ function logout() { currentUser = null; saveSession(null); updateUserUI(); showA
 function showAuthModal() { $('authOverlay').classList.add('on'); document.body.style.overflow = 'hidden'; }
 function closeAuthModal() {
   $('authOverlay').classList.remove('on');
-  if (!$('modal').classList.contains('on') && !$('instructionsOverlay').classList.contains('on')) document.body.style.overflow = '';
+  $('authEmail').value = '';
+  $('authPass').value = '';
+  if ($('authName')) $('authName').value = '';
+  if (!$('modal').classList.contains('on') && !$('instructionsOverlay').classList.contains('on') && !$('previewOverlay').classList.contains('on')) document.body.style.overflow = '';
 }
 function switchAuthTab(tab) {
   document.querySelectorAll('.auth-tab').forEach(function (t) { t.classList.remove('active'); });
@@ -169,9 +186,12 @@ function switchAuthTab(tab) {
 function handleAuth(e) {
   e.preventDefault();
   var tab = document.querySelector('.auth-tab.active').dataset.tab;
-  var email = $('authEmail').value;
-  var pass = $('authPass').value;
-  var name = $('authName') ? $('authName').value : '';
+  var email = $('authEmail').value.trim();
+  var pass = $('authPass').value.trim();
+  var name = $('authName') ? $('authName').value.trim() : '';
+  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRe.test(email)) { showToast('To\'g\'ri email kiriting'); return; }
+  if (pass.length < 6) { showToast('Parol kamida 6 ta belgi bo\'lishi kerak'); return; }
   var result;
   if (tab === 'register') {
     if (!name) { showToast('Ism kiriting'); return; }
@@ -371,7 +391,7 @@ function openModal(id) {
 }
 function closeModal() {
   $('modal').classList.remove('on');
-  if (!$('instructionsOverlay').classList.contains('on')) document.body.style.overflow = '';
+  if (!$('instructionsOverlay').classList.contains('on') && !$('previewOverlay').classList.contains('on') && !$('authOverlay').classList.contains('on')) document.body.style.overflow = '';
   currentTemplate = null;
   $('previewSection').hidden = true;
   showCode();
@@ -383,7 +403,7 @@ function renderModal() {
   $('mName').textContent = t.n;
   $('mDesc').textContent = t.d;
   $('mTabs').innerHTML = t.f.map(function (file, i) {
-    return '<button class="m-tab ' + (i === currentFileIndex ? 'on' : '') + '" role="tab" aria-selected="' + (i === currentFileIndex) + '" onclick="selectFile(' + i + ')">' + icon('file') + escapeHtml(file.n) + '</button>';
+    return '<button class="m-tab ' + (i === currentFileIndex ? 'on' : '') + '" role="tab" aria-selected="' + (i === currentFileIndex) + '" onclick="selectFile(' + i + ')">' + icon('document') + escapeHtml(file.n) + '</button>';
   }).join('');
   $('mPath').textContent = f.p;
   $('mFoot').innerHTML = t.f.map(function (file) { return '<span>' + escapeHtml(file.n) + '</span>'; }).join('');
@@ -484,19 +504,20 @@ function copyTemplate(id) {
 function downloadFile() {
   if (!currentTemplate) return;
   var f = currentTemplate.f[currentFileIndex];
-  var blob = new Blob([f.c], { type: 'text/plain' });
+  var blob = new Blob([f.c], { type: 'text/plain;charset=utf-8' });
   var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = f.n; a.click();
-  URL.revokeObjectURL(a.href); showToast('Yuklab olindi');
+  a.href = URL.createObjectURL(blob); a.download = f.n; document.body.appendChild(a); a.click();
+  setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 100);
+  showToast('Yuklab olindi');
 }
 function downloadTemplate(id) {
   var t = templates.find(function (x) { return x.id === id; });
   if (!t) return;
   t.f.forEach(function (f) {
-    var blob = new Blob([f.c], { type: 'text/plain' });
+    var blob = new Blob([f.c], { type: 'text/plain;charset=utf-8' });
     var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = f.n; a.click();
-    URL.revokeObjectURL(a.href);
+    a.href = URL.createObjectURL(blob); a.download = f.n; document.body.appendChild(a); a.click();
+    setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 100);
   });
   showToast('Barcha fayllar yuklab olindi');
 }
@@ -504,8 +525,9 @@ function exportAll() {
   var data = templates.map(function (t) { return { name: t.n, description: t.d, category: t.c, difficulty: t.diff, tags: t.t, instructions: t.instructions, files: t.f.map(function (f) { return { name: f.n, path: f.p, code: f.c }; }) }; });
   var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'nesto-templates.json'; a.click();
-  URL.revokeObjectURL(a.href); showToast('Exported');
+  a.href = URL.createObjectURL(blob); a.download = 'nesto-templates.json'; document.body.appendChild(a); a.click();
+  setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 100);
+  showToast('Exported');
 }
 
 /* ---------------- Instructions ---------------- */
@@ -525,14 +547,14 @@ function openInstructions(id) {
 }
 function closeInstructions() {
   $('instructionsOverlay').classList.remove('on');
-  if (!$('modal').classList.contains('on')) document.body.style.overflow = '';
+  if (!$('modal').classList.contains('on') && !$('previewOverlay').classList.contains('on') && !$('authOverlay').classList.contains('on')) document.body.style.overflow = '';
 }
 function renderMarkdown(md) {
   return escapeHtml(md)
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/^```(?:bash|sh|shell)?\n([\s\S]*?)```/gm, function (_, c) { return '<pre><code>' + c + '</code></pre>'; })
+    .replace(/^```(?:bash|sh|shell)?\n([\s\S]*?)```/gm, '<pre><code>$1</code></pre>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
@@ -570,7 +592,7 @@ function runLivePreview() {
 }
 function closePreviewOverlay() {
   $('previewOverlay').classList.remove('on');
-  if (!$('modal').classList.contains('on') && !$('instructionsOverlay').classList.contains('on')) document.body.style.overflow = '';
+  if (!$('modal').classList.contains('on') && !$('instructionsOverlay').classList.contains('on') && !$('authOverlay').classList.contains('on')) document.body.style.overflow = '';
 }
 function runPythonPreview(code, content) {
   content.innerHTML = '<div style="height:100%;display:flex;flex-direction:column">' +
@@ -649,7 +671,7 @@ function openPalette() {
 }
 function closePalette() {
   $('paletteOverlay').classList.remove('on');
-  if (!$('modal').classList.contains('on') && !$('instructionsOverlay').classList.contains('on') && !$('authOverlay').classList.contains('on')) document.body.style.overflow = '';
+  if (!$('modal').classList.contains('on') && !$('instructionsOverlay').classList.contains('on') && !$('previewOverlay').classList.contains('on') && !$('authOverlay').classList.contains('on')) document.body.style.overflow = '';
 }
 function paletteQuery() { return $('paletteInput').value.trim().toLowerCase(); }
 function markMatch(s) {
@@ -935,10 +957,13 @@ function hideLoader() {
 
 /* ---------------- Events ---------------- */
 $('search').addEventListener('input', function (e) {
-  query = e.target.value;
-  difficulty = '';
-  renderSidebar();
-  renderGrid(false);
+  clearTimeout($('search')._db);
+  $('search')._db = setTimeout(function () {
+    query = e.target.value;
+    difficulty = '';
+    renderSidebar();
+    renderGrid(false);
+  }, 120);
 });
 $('paletteInput').addEventListener('input', function () { paletteIndex = 0; renderPalette(); });
 $('modal').addEventListener('click', function (e) { if (e.target === e.currentTarget) closeModal(); });
@@ -947,10 +972,13 @@ document.addEventListener('keydown', function (e) {
   var paletteOpen = $('paletteOverlay').classList.contains('on');
   if (e.key === 'Escape') {
     if (paletteOpen) { closePalette(); return; }
-    closeModal(); closeShortcuts(); closeInstructions(); closePreviewOverlay();
+    closeModal(); closeShortcuts(); closeInstructions(); closePreviewOverlay(); closeAuthModal();
   }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (paletteOpen) closePalette(); else openPalette(); }
-  if ((e.metaKey || e.ctrlKey) && e.key === 'c' && currentTemplate) { e.preventDefault(); copyCode(); }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'c' && currentTemplate) {
+    var sel = window.getSelection();
+    if (sel && sel.toString().length === 0) { e.preventDefault(); copyCode(); }
+  }
   if ((e.metaKey || e.ctrlKey) && e.key === 's' && currentTemplate) { e.preventDefault(); downloadFile(); }
   if ((e.metaKey || e.ctrlKey) && e.key === 'd') { e.preventDefault(); toggleTheme(); }
   if ((e.metaKey || e.ctrlKey) && e.key === 'e') { e.preventDefault(); exportAll(); }
@@ -958,7 +986,7 @@ document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowDown') { e.preventDefault(); paletteIndex = Math.min(paletteIndex + 1, paletteResults.length - 1); renderPalette(); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); paletteIndex = Math.max(paletteIndex - 1, 0); renderPalette(); }
     else if (e.key === 'Enter') { e.preventDefault(); openTemplateFromPalette(paletteIndex); }
-  } else if (currentTemplate) {
+  } else if (currentTemplate && !$('modal').classList.contains('on')) {
     if (e.key === 'ArrowRight' && currentFileIndex < currentTemplate.f.length - 1) { currentFileIndex++; renderModal(); }
     if (e.key === 'ArrowLeft' && currentFileIndex > 0) { currentFileIndex--; renderModal(); }
   }
@@ -988,6 +1016,29 @@ function init() {
     if ('requestIdleCallback' in window) requestIdleCallback(function () { init3D(); }, { timeout: 1800 });
     else setTimeout(init3D, 600);
   })();
+
+  window.addEventListener('beforeunload', function () {
+    if (threeState.running) { threeState.running = false; cancelAnimationFrame(threeState.raf); }
+    if (threeState.renderer) { threeState.renderer.dispose(); threeState.renderer = null; }
+    if (threeState.scene) { threeState.scene.traverse(function (obj) { if (obj.geometry) obj.geometry.dispose(); if (obj.material) obj.material.dispose(); }); threeState.scene = null; }
+    if (threeState.onResize) { window.removeEventListener('resize', threeState.onResize); threeState.onResize = null; }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var selectors = ['.modal-overlay.on', '.auth-overlay.on', '.instructions-overlay.on', '.preview-overlay.on', '.shortcuts-overlay.on', '.palette-overlay.on'];
+    var activeOverlay = null;
+    for (var i = 0; i < selectors.length; i++) {
+      var el = document.querySelector(selectors[i]);
+      if (el) { activeOverlay = el; break; }
+    }
+    if (!activeOverlay) return;
+    var focusable = activeOverlay.querySelectorAll('button:not([disabled]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), a[href], textarea:not([disabled])');
+    if (!focusable.length) return;
+    var first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+    else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+  });
 }
 
 init();
