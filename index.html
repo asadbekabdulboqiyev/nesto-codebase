@@ -133,7 +133,7 @@
       <div class="inst-header" id="instHeader" onclick="toggleInstructions()" role="button" tabindex="0" aria-expanded="false" aria-controls="instBody" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleInstructions()}">
         <h3>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-          Instructions - Flutter loyiha qanday boshlash kerak
+          Boshlang'ich ko'rsatmalar
         </h3>
         <span class="chevron" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -308,7 +308,7 @@
   <span id="toastMsg">Copied!</span>
 </div>
 
-<div class="auth-overlay" id="authOverlay" onclick="if(event.target===this)closeAuthModal()">
+<div class="auth-overlay" id="authOverlay" onclick="if(event.target===this)closeAuthModal()" onkeydown="if(event.key==='Escape')closeAuthModal()">
 <div class="auth-panel">
   <div class="auth-head">
     <h2>
