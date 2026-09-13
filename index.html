@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -17,7 +17,7 @@
 <meta property="og:description" content="212+ code templates for Flutter, Arduino, Python, JavaScript and more, with live preview and 3D interface.">
 <meta property="og:url" content="https://asadbekabdulboqiyev.github.io/nesto-codebase/">
 <meta property="og:site_name" content="NestoCodebase">
-<meta property="og:locale" content="uz_UZ">
+<meta property="og:locale" content="en_US">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="NestoCodebase - 212+ Code Templates & Live Preview">
@@ -39,7 +39,7 @@
 <div class="vignette" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
-<div class="loader" id="loader" role="status" aria-label="Yuklanmoqda">
+<div class="loader" id="loader" role="status" aria-label="Loading">
   <div class="loader-cube" aria-hidden="true">
     <i></i><i></i><i></i><i></i><i></i><i></i>
   </div>
@@ -50,25 +50,25 @@
 <div class="layout">
 <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation">
   <div class="s-head">
-    <a class="s-logo" href="#" aria-label="NestoCodebase bosh sahifa">
+    <a class="s-logo" href="#" aria-label="NestoCodebase home page">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
       Nesto<span>Codebase</span>
     </a>
     <div class="s-sub" id="subCount">212+ templates</div>
   </div>
   <div class="s-search">
-    <label for="search" class="sr-only">Templates qidirish</label>
+    <label for="search" class="sr-only">Search templates</label>
     <div class="search-wrap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="search" id="search" placeholder="Qidirish..." autocomplete="off" role="searchbox" aria-label="Templates qidirish">
+      <input type="search" id="search" placeholder="Search..." autocomplete="off" role="searchbox" aria-label="Search templates">
       <kbd class="kbd">Ctrl K</kbd>
     </div>
   </div>
   <nav class="s-nav" id="sidebarNav" aria-label="Categories"></nav>
   <div class="s-foot">
-    <button class="s-btn" onclick="exportAll()" aria-label="Barcha templatesni yuklab olish">
+    <button class="s-btn" onclick="exportAll()" aria-label="Download all templates">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      Hammasini yuklab olish
+      Download All
     </button>
     <button class="s-btn" onclick="showShortcuts()" aria-label="Keyboard shortcuts">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
@@ -86,45 +86,45 @@
   <header class="m-header" id="mHeader">
     <div class="m-title" id="headerTitle">Templates</div>
     <div class="m-actions">
-      <button class="theme-toggle menu-toggle" onclick="toggleSidebar()" id="menuToggle" title="Menyu" aria-label="Menyuni ochish">
+      <button class="theme-toggle menu-toggle" onclick="toggleSidebar()" id="menuToggle" title="Menu" aria-label="Open menu">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <button class="m-btn" onclick="openPalette()" aria-label="Command palette ochish">
+      <button class="m-btn" onclick="openPalette()" aria-label="Open command palette">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M19.1 4.9l-2.8 2.8M7.7 16.3l-2.8 2.8"/></svg>
-        Izlash <span class="kbd">Ctrl K</span>
+        Search <span class="kbd">Ctrl K</span>
       </button>
       <button class="m-btn" onclick="exportAll()" aria-label="Export all templates as JSON">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
         Export
       </button>
-      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Theme almashtirish" aria-label="Toggle dark/light theme">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle theme" aria-label="Toggle dark/light theme">
         <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
       </button>
     </div>
   </header>
 
   <div class="m-content">
-    <section class="hero-section" aria-label="NestoCodebase haqida">
-      <div class="hero-badge" id="heroBadge">212+ kod shablonlari</div>
+    <section class="hero-section" aria-label="About NestoCodebase">
+      <div class="hero-badge" id="heroBadge">212+ code templates</div>
       <h1 id="heroTitle">Nesto<span>Codebase</span></h1>
-      <p id="heroSub">Flutter, Arduino, Python, JavaScript va boshqalar. Tayyor kod shablonlari, live preview va bosqichma-bosqich qo'llanmalar.</p>
+      <p id="heroSub">Flutter, Arduino, Python, JavaScript and more. Ready-made code templates, live preview, and step-by-step guides.</p>
       <div class="hero-chips" aria-hidden="true">
         <span class="chip chip-1"><i style="--c:var(--green)"></i><code>flutter create</code></span>
         <span class="chip chip-2"><i style="--c:var(--accent)"></i><code>dart pub add dio</code></span>
         <span class="chip chip-3"><i style="--c:var(--orange)"></i><code>pip install requests</code></span>
         <span class="chip chip-4"><i style="--c:var(--purple)"></i><code>void setup() {}</code></span>
       </div>
-      <div class="hero-stats" role="list" aria-label="Statistikalar">
+      <div class="hero-stats" role="list" aria-label="Statistics">
         <div class="hero-stat" role="listitem"><div class="num" id="totalCount" data-count="0">0</div><div class="lbl">Templates</div></div>
         <div class="hero-stat" role="listitem"><div class="num" id="langCount" data-count="0">0</div><div class="lbl">Languages</div></div>
         <div class="hero-stat" role="listitem"><div class="num" id="levelCount" data-count="4">0</div><div class="lbl">Levels</div></div>
       </div>
     </section>
 
-    <section class="recent-section" id="recentSection" hidden aria-label="So'nggi ko'rilganlar">
+    <section class="recent-section" id="recentSection" hidden aria-label="Recently viewed">
       <div class="recent-head">
-        <h2>So'nggi ko'rilganlar</h2>
-        <button class="m-btn" onclick="clearRecent()">Tozalash</button>
+        <h2>Recently Viewed</h2>
+        <button class="m-btn" onclick="clearRecent()">Clear</button>
       </div>
       <div class="recent-row" id="recentRow"></div>
     </section>
@@ -133,7 +133,7 @@
       <div class="inst-header" id="instHeader" onclick="toggleInstructions()" role="button" tabindex="0" aria-expanded="false" aria-controls="instBody" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleInstructions()}">
         <h3>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-          Boshlang'ich ko'rsatmalar
+          Getting Started
         </h3>
         <span class="chevron" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -142,36 +142,36 @@
       <div class="inst-body" id="instBody" role="region" aria-label="General instructions">
         <div class="inst-grid">
           <div class="inst-card">
-            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M13 2v7h7"/></svg> Loyiha yaratish</h4>
-            <p>Yangi Flutter loyiha yaratish uchun terminalni oching va quyidagi buyruqlarni kiriting:<br><code>flutter create my_app</code><br><code>cd my_app &amp;&amp; flutter run</code></p>
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M13 2v7h7"/></svg> Create a Project</h4>
+            <p>To create a new Flutter project, open a terminal and run the following commands:<br><code>flutter create my_app</code><br><code>cd my_app &amp;&amp; flutter run</code></p>
           </div>
           <div class="inst-card">
-            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg> Paketlar o'rnatish</h4>
-            <p>Kerakli paketlarni qo'shish:<br><code>flutter pub add provider</code><br><code>flutter pub add dio</code><br><code>flutter pub add flutter_riverpod</code><br><code>flutter pub add flutter_bloc</code></p>
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg> Install Packages</h4>
+            <p>Add the required packages:<br><code>flutter pub add provider</code><br><code>flutter pub add dio</code><br><code>flutter pub add flutter_riverpod</code><br><code>flutter pub add flutter_bloc</code></p>
           </div>
           <div class="inst-card">
-            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg> Struktura yaratish</h4>
-            <p>Tizimli papka tuzilmasi:<br><code>mkdir lib/pages lib/services lib/widgets</code><br><code>mkdir lib/providers lib/models lib/utils</code></p>
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg> Create Structure</h4>
+            <p>Organized folder structure:<br><code>mkdir lib/pages lib/services lib/widgets</code><br><code>mkdir lib/providers lib/models lib/utils</code></p>
           </div>
           <div class="inst-card">
             <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> Build &amp; Deploy</h4>
-            <p>Release versiya yaratish:<br><code>flutter build apk --release</code><br><code>flutter build ios --release</code><br><code>flutter build web --release</code></p>
+            <p>Build a release version:<br><code>flutter build apk --release</code><br><code>flutter build ios --release</code><br><code>flutter build web --release</code></p>
           </div>
           <div class="inst-card">
             <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> Test &amp; Format</h4>
-            <p>Sifatni nazorat qilish:<br><code>flutter test</code><br><code>flutter analyze</code><br><code>dart format lib/</code></p>
+            <p>Quality checks:<br><code>flutter test</code><br><code>flutter analyze</code><br><code>dart format lib/</code></p>
           </div>
           <div class="inst-card">
             <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> State Management</h4>
-            <p>Tanlov: Provider, Riverpod, BLoC, GetX yoki Cubit. Har biri o'ziga xususiyatlarga ega. Boshlang'ich loyihalar uchun Provider, kattalar uchun Riverpod yoki BLoC tavsiya etiladi.</p>
+            <p>Options: Provider, Riverpod, BLoC, GetX, or Cubit. Each has its own strengths. Provider is recommended for starter projects, Riverpod or BLoC for larger ones.</p>
           </div>
           <div class="inst-card">
             <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg> API integratsiya</h4>
-            <p>Dio yoki http paketidan foydalaning. REST API, GraphQL, WebSocket qo'llab-quvvatlanadi. Firebase bilan ham ishlash mumkin.</p>
+            <p>Use the Dio or http package. REST API, GraphQL, and WebSocket are supported, and Firebase works too.</p>
           </div>
           <div class="inst-card">
             <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2H7a5 5 0 00-5 5v10a5 5 0 005 5h10a5 5 0 005-5V7a5 5 0 00-5-5z"/><circle cx="12" cy="12" r="3"/></svg> UI &amp; Animations</h4>
-            <p>Material 3, Cupertino yoki custom dizayn. Implicit animatsiyalar, Hero, CustomPainter, Lottie effektlari mavjud.</p>
+            <p>Material 3, Cupertino, or a custom design. Includes implicit animations, Hero, CustomPainter, and Lottie effects.</p>
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@
 </main>
 </div>
 
-<button class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Tepaga qaytish">
+<button class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
@@ -192,14 +192,14 @@
 <div class="palette">
   <div class="palette-input-wrap">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="paletteInput" placeholder="Template nomi, tag yoki til bilan qidiring..." autocomplete="off" aria-label="Command palette qidirish">
+    <input id="paletteInput" placeholder="Search by template name, tag, or language..." autocomplete="off" aria-label="Command palette search">
     <kbd class="kbd">Esc</kbd>
   </div>
   <div class="palette-results" id="paletteResults" role="listbox"></div>
   <div class="palette-foot">
-    <span><kbd class="kbd">&#8593;</kbd><kbd class="kbd">&#8595;</kbd> tanlash</span>
-    <span><kbd class="kbd">Enter</kbd> ochish</span>
-    <span><kbd class="kbd">Esc</kbd> yopish</span>
+    <span><kbd class="kbd">&#8593;</kbd><kbd class="kbd">&#8595;</kbd> select</span>
+    <span><kbd class="kbd">Enter</kbd> open</span>
+    <span><kbd class="kbd">Esc</kbd> close</span>
   </div>
 </div>
 </div>
@@ -212,9 +212,9 @@
       <p id="mDesc"></p>
     </div>
     <div class="m-actions-row">
-      <button class="m-action fav" id="favBtn" onclick="toggleFav(currentTemplate?.id)" aria-label="Favoritesga qo'shish">
+      <button class="m-action fav" id="favBtn" onclick="toggleFav(currentTemplate?.id)" aria-label="Add to favorites">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-        Saqlash
+        Save
       </button>
       <button class="m-action" onclick="showPreview()" title="Preview" aria-label="Show preview">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
@@ -222,7 +222,7 @@
       </button>
       <button class="m-action" onclick="showInstructions()" title="Instructions" aria-label="Show instructions">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        Qo'llanma
+        Guide
       </button>
       <button class="m-action run" onclick="runLivePreview()" title="Run" aria-label="Run live preview">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -238,8 +238,8 @@
     <div id="previewContent">
       <div class="modal-placeholder">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <p>Preview hali yuklanmagan</p>
-        <p>Screenshotni <code>code_info/{id}.png</code> ga qo'ying</p>
+        <p>Preview not loaded yet</p>
+        <p>Place a screenshot at <code>code_info/{id}.png</code></p>
       </div>
     </div>
   </div>
@@ -313,30 +313,30 @@
   <div class="auth-head">
     <h2>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span id="authTitle">Kirish</span>
+      <span id="authTitle">Sign In</span>
     </h2>
     <button class="m-close" onclick="closeAuthModal()" aria-label="Close auth">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
   <div class="auth-tabs">
-    <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">Kirish</button>
-    <button class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">Ro'yxatdan o'tish</button>
+    <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">Sign In</button>
+    <button class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">Sign Up</button>
   </div>
   <form class="auth-form" onsubmit="handleAuth(event)">
     <div id="nameField" hidden>
-      <label for="authName">Ism</label>
-      <input type="text" id="authName" placeholder="Ismingiz" autocomplete="name">
+      <label for="authName">Name</label>
+      <input type="text" id="authName" placeholder="Your name" autocomplete="name">
     </div>
     <div>
       <label for="authEmail">Email</label>
       <input type="email" id="authEmail" placeholder="email@example.com" autocomplete="email" required>
     </div>
     <div>
-      <label for="authPass">Parol</label>
-      <input type="password" id="authPass" placeholder="Kamida 6 ta belgi" autocomplete="new-password" required minlength="6">
+      <label for="authPass">Password</label>
+      <input type="password" id="authPass" placeholder="At least 6 characters" autocomplete="new-password" required minlength="6">
     </div>
-    <button type="submit" class="s-btn primary" style="width:100%;justify-content:center;padding:10px">Davom etish</button>
+    <button type="submit" class="s-btn primary" style="width:100%;justify-content:center;padding:10px">Continue</button>
   </form>
 </div>
 </div>

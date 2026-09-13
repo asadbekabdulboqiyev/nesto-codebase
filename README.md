@@ -48,6 +48,20 @@
 
 ---
 
+## Popular App Clones
+
+| App | Contents | Files |
+|-----|----------|-------|
+| Instagram Clone | Feed, Stories, Profile, Search, Reels | 5 files |
+| WhatsApp Clone | Chats, Calls, Status | 4 files |
+| Spotify Clone | Home, Search, Library, Player | 5 files |
+| Telegram Clone | Chats, Messages | 2 files |
+| Netflix Clone | Home, Search, Profile | 4 files |
+| TikTok Clone | Feed, Discover, Profile | 4 files |
+| Google-Style Login | Login, Register, Auth Service | 3 files |
+
+---
+
 ## Quick Start
 
 ### Option 1: Use Online

@@ -50,7 +50,7 @@ function starIcon(fav) {
 /* ---------------- Config ---------------- */
 var CATEGORIES = [
   { id: 'favorites', n: 'Favorites', icon: 'heart' },
-  { id: 'all', n: 'Barchasi', icon: 'sparkle' },
+  { id: 'all', n: 'All', icon: 'sparkle' },
   { id: 'flutter', n: 'Flutter', icon: 'rocket' },
   { id: 'arduino', n: 'Arduino', icon: 'building' },
   { id: 'python', n: 'Python', icon: 'document' },
@@ -60,7 +60,7 @@ var CATEGORIES = [
   { id: 'nodejs', n: 'Node.js', icon: 'globe' },
   { id: 'html-css', n: 'HTML/CSS', icon: 'palette' },
   { id: 'starter', n: 'Starter', icon: 'rocket' },
-  { id: 'pages', n: 'Sahifalar', icon: 'document' },
+  { id: 'pages', n: 'Pages', icon: 'document' },
   { id: 'auth', n: 'Auth', icon: 'lock' },
   { id: 'navigation', n: 'Navigation', icon: 'compass' },
   { id: 'state', n: 'State Mgmt', icon: 'lightning' },
@@ -158,15 +158,15 @@ function register(name, email, pass) {
   users.push(user); saveUsers(users);
   currentUser = { id: user.id, name: user.name, email: user.email };
   saveSession(currentUser);
-  return { ok: true, msg: 'Muvaffaqiyatli ro\'yxatdan o\'tildi' };
+  return { ok: true, msg: 'Successfully registered' };
 }
 function login(email, pass) {
   var users = getUsers();
   var user = users.find(function (u) { return u.email === email && u.pass === hashPassword(pass); });
-  if (!user) return { ok: false, msg: 'Email yoki parol xato' };
+  if (!user) return { ok: false, msg: 'Email or password is incorrect' };
   currentUser = { id: user.id, name: user.name, email: user.email };
   saveSession(currentUser);
-  return { ok: true, msg: 'Xush kelibsiz, ' + user.name };
+  return { ok: true, msg: 'Welcome, ' + user.name };
 }
 function logout() { currentUser = null; saveSession(null); updateUserUI(); showAuthModal(); }
 function showAuthModal() { $('authOverlay').classList.add('on'); document.body.style.overflow = 'hidden'; }
@@ -181,7 +181,7 @@ function switchAuthTab(tab) {
   document.querySelectorAll('.auth-tab').forEach(function (t) { t.classList.remove('active'); });
   document.querySelector('.auth-tab[data-tab="' + tab + '"]').classList.add('active');
   $('nameField').hidden = tab !== 'register';
-  $('authTitle').textContent = tab === 'register' ? "Ro'yxatdan o'tish" : 'Kirish';
+  $('authTitle').textContent = tab === 'register' ? 'Sign Up' : 'Sign In';
 }
 function handleAuth(e) {
   e.preventDefault();
@@ -190,11 +190,11 @@ function handleAuth(e) {
   var pass = $('authPass').value.trim();
   var name = $('authName') ? $('authName').value.trim() : '';
   var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRe.test(email)) { showToast('To\'g\'ri email kiriting'); return; }
-  if (pass.length < 6) { showToast('Parol kamida 6 ta belgi bo\'lishi kerak'); return; }
+  if (!emailRe.test(email)) { showToast('Enter a valid email'); return; }
+  if (pass.length < 6) { showToast('Password must be at least 6 characters'); return; }
   var result;
   if (tab === 'register') {
-    if (!name) { showToast('Ism kiriting'); return; }
+    if (!name) { showToast('Enter a name'); return; }
     result = register(name, email, pass);
   } else {
     result = login(email, pass);
@@ -207,9 +207,9 @@ function updateUserUI() {
   if (currentUser) {
     var initial = (currentUser.name || '?').charAt(0).toUpperCase();
     el.innerHTML = '<div class="s-item" style="cursor:default"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0">' + escapeHtml(initial) + '</div><div style="min-width:0"><div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(currentUser.name) + '</div><div style="font-size:10px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(currentUser.email) + '</div></div></div>' +
-      '<button class="s-btn" onclick="logout()" style="color:var(--red);border-color:rgba(248,113,113,.4)">' + icon('lock') + 'Chiqish</button>';
+      '<button class="s-btn" onclick="logout()" style="color:var(--red);border-color:rgba(248,113,113,.4)">' + icon('lock') + 'Log Out</button>';
   } else {
-    el.innerHTML = '<button class="s-btn primary" onclick="showAuthModal()">' + icon('key') + 'Kirish / Ro\'yxatdan o\'tish</button>';
+    el.innerHTML = '<button class="s-btn primary" onclick="showAuthModal()">' + icon('key') + 'Sign In / Register</button>';
   }
 }
 function initAuth() {
@@ -229,15 +229,15 @@ function toggleFav(id) {
   updateFavBtn();
   if (category === 'favorites') { renderSidebar(); renderGrid(true); }
   else { renderSidebar(); var btn = document.querySelector('.card .fav-heart[data-id="' + id + '"]'); if (btn) btn.outerHTML = heartButtonHTML(id, added); }
-  showToast(added ? 'Favoritesga qo\'shildi' : 'Favoritesdan olib tashlandi');
+  showToast(added ? 'Added to favorites' : 'Removed from favorites');
 }
 function updateFavBtn() {
   var btn = $('favBtn');
   if (!btn) return;
   var on = !!(currentTemplate && favorites.has(currentTemplate.id));
   btn.classList.toggle('on', on);
-  btn.setAttribute('aria-label', on ? 'Favoritesdan olib tashlash' : 'Favoritesga qo\'shish');
-  btn.innerHTML = heartIcon(on) + (on ? 'Saqlangan' : 'Saqlash');
+  btn.setAttribute('aria-label', on ? 'Remove from favorites' : 'Add to favorites');
+  btn.innerHTML = heartIcon(on) + (on ? 'Saved' : 'Save');
 }
 
 function loadRecent() { try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch (e) { return []; } }
@@ -265,7 +265,7 @@ function renderRecent() {
 
 /* ---------------- Rendering ---------------- */
 function heartButtonHTML(id, fav) {
-  return '<button class="fav-heart ' + (fav ? 'on' : '') + '" data-id="' + id + '" aria-label="' + (fav ? 'Olib tashlash' : 'Saqlash') + '" onclick="event.stopPropagation();toggleFav(\'' + id + '\')">' + heartIcon(fav) + '</button>';
+  return '<button class="fav-heart ' + (fav ? 'on' : '') + '" data-id="' + id + '" aria-label="' + (fav ? 'Remove' : 'Save') + '" onclick="event.stopPropagation();toggleFav(\'' + id + '\')">' + heartIcon(fav) + '</button>';
 }
 function cardHTML(t) {
   var color = LANG_COLORS[t.c] || '#4f8cff';
@@ -329,15 +329,15 @@ function renderGrid(animate) {
   animate = animate !== false;
   var filtered = getFiltered();
   var grid = $('grid');
-  var catName = category === 'all' ? 'Barcha templates' : category === 'favorites' ? 'Favorites' : (CATEGORIES.find(function (c) { return c.id === category; }) || {}).n || 'Templates';
+  var catName = category === 'all' ? 'All Templates' : category === 'favorites' ? 'Favorites' : (CATEGORIES.find(function (c) { return c.id === category; }) || {}).n || 'Templates';
   $('headerTitle').textContent = catName;
-  $('countBar').innerHTML = filtered.length ? '<span>' + filtered.length + '</span> ta template topildi' : '';
+  $('countBar').innerHTML = filtered.length ? '<span>' + filtered.length + '</span> templates found' : '';
   $('subCount').textContent = templates.length + ' templates';
   if (!filtered.length) {
     if (category === 'favorites') {
-      grid.innerHTML = '<div class="empty" role="status">' + heartIcon() + '<p>Favorites hali bo\'sh</p><p style="font-size:11px;margin-top:4px">Karta ustidagi yurak belgisini bosib qo\'shing</p></div>';
+      grid.innerHTML = '<div class="empty" role="status">' + heartIcon() + '<p>No favorites yet</p><p style="font-size:11px;margin-top:4px">Click the heart icon on a card to add it</p></div>';
     } else {
-      grid.innerHTML = '<div class="empty" role="status">' + icon('search') + '<p>Hech narsa topilmadi</p></div>';
+      grid.innerHTML = '<div class="empty" role="status">' + icon('search') + '<p>Nothing found</p></div>';
     }
     return;
   }
@@ -422,12 +422,12 @@ function showPreview() {
   if (t.preview) {
     var img = new Image();
     img.onload = function () { content.innerHTML = ''; content.appendChild(img); };
-    img.onerror = function () { content.innerHTML = '<div class="modal-placeholder">' + icon('info') + '<p>Preview yuklanmadi</p></div>'; };
+    img.onerror = function () { content.innerHTML = '<div class="modal-placeholder">' + icon('info') + '<p>Preview failed to load</p></div>'; };
     img.src = t.preview;
     img.alt = t.n + ' preview';
     img.style.cssText = 'max-width:100%;max-height:480px;border-radius:var(--r-md);box-shadow:var(--shadow-2)';
   } else {
-    content.innerHTML = '<div class="modal-placeholder">' + icon('info') + '<p>Preview mavjud emas</p></div>';
+    content.innerHTML = '<div class="modal-placeholder">' + icon('info') + '<p>No preview available</p></div>';
   }
   ps.hidden = false;
   hideCode();
@@ -493,7 +493,7 @@ function copyCode() { if (!currentTemplate) return; safeWriteText(currentTemplat
 function copyAll() {
   if (!currentTemplate) return;
   var all = currentTemplate.f.map(function (f) { return '// ' + f.p + '\n' + f.c; }).join('\n\n');
-  safeWriteText(all).then(function () { showToast('Barcha fayllar nusxalandi'); }).catch(function () { showToast('Xatolik'); });
+  safeWriteText(all).then(function () { showToast('All files copied'); }).catch(function () { showToast('Error'); });
 }
 function copyTemplate(id) {
   var t = templates.find(function (x) { return x.id === id; });
@@ -508,7 +508,7 @@ function downloadFile() {
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = f.n; document.body.appendChild(a); a.click();
   setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 100);
-  showToast('Yuklab olindi');
+  showToast('Downloaded');
 }
 function downloadTemplate(id) {
   var t = templates.find(function (x) { return x.id === id; });
@@ -519,7 +519,7 @@ function downloadTemplate(id) {
     a.href = URL.createObjectURL(blob); a.download = f.n; document.body.appendChild(a); a.click();
     setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 100);
   });
-  showToast('Barcha fayllar yuklab olindi');
+  showToast('All files downloaded');
 }
 function exportAll() {
   var data = templates.map(function (t) { return { name: t.n, description: t.d, category: t.c, difficulty: t.diff, tags: t.t, instructions: t.instructions, files: t.f.map(function (f) { return { name: f.n, path: f.p, code: f.c }; }) }; });
@@ -540,8 +540,8 @@ function toggleInstructions() {
 function openInstructions(id) {
   var t = templates.find(function (x) { return x.id === id; });
   if (!t) return;
-  $('instTitle').textContent = t.n + ' - Qo\'llanma';
-  $('instBody2').innerHTML = renderMarkdown(t.instructions || 'Qo\'llanma mavjud emas.');
+  $('instTitle').textContent = t.n + ' - Guide';
+  $('instBody2').innerHTML = renderMarkdown(t.instructions || 'No guide available.');
   $('instructionsOverlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
@@ -585,7 +585,7 @@ function runLivePreview() {
   } else if (lang === 'arduino') {
     runArduinoPreview(code, content);
   } else {
-    content.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text3)">' + icon('info') + '<p style="margin-top:14px;font-size:13px">Live preview hali mavjud emas</p><p style="font-size:11px;margin-top:6px">Kodni nusxalang va lokal muhitda ishga tushiring</p></div>';
+    content.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text3)">' + icon('info') + '<p style="margin-top:14px;font-size:13px">Live preview not available yet</p><p style="font-size:11px;margin-top:6px">Copy the code and run it in your local environment</p></div>';
   }
   $('previewOverlay').classList.add('on');
   document.body.style.overflow = 'hidden';
@@ -596,14 +596,14 @@ function closePreviewOverlay() {
 }
 function runPythonPreview(code, content) {
   content.innerHTML = '<div style="height:100%;display:flex;flex-direction:column">' +
-    '<div style="padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:var(--text)">Python Terminal</span><span style="font-size:10px;color:var(--text3)">Pyodide yuklanmoqda...</span></div>' +
+    '<div style="padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:var(--text)">Python Terminal</span><span style="font-size:10px;color:var(--text3)">Pyodide loading...</span></div>' +
     '<div id="pythonOutput" style="flex:1;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.6;overflow:auto;background:#0b0b12;color:#d4d4d4;white-space:pre-wrap"></div></div>';
   var output = $('pythonOutput');
   if (!window.loadPyodide) {
     var script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
     script.onload = function () { executePython(code, output); };
-    script.onerror = function () { output.innerHTML = '<span style="color:var(--red)">Pyodide yuklashda xatolik. Internetni tekshiring.</span>'; };
+    script.onerror = function () { output.innerHTML = '<span style="color:var(--red)">Error loading Pyodide. Check your internet connection.</span>'; };
     document.head.appendChild(script);
   } else {
     executePython(code, output);
@@ -611,13 +611,13 @@ function runPythonPreview(code, content) {
 }
 async function executePython(code, output) {
   try {
-    output.innerHTML = '<span style="color:var(--green)">&gt;&gt;&gt; Pyodide yuklandi. Bajarilmoqda...</span>\n\n';
+    output.innerHTML = '<span style="color:var(--green)">&gt;&gt;&gt; Pyodide loaded. Running...</span>\n\n';
     var pyodide = await loadPyodide();
     var outputBuffer = '';
     pyodide.setStdout({ batched: function (text) { outputBuffer += text; } });
     pyodide.setStderr({ batched: function (text) { outputBuffer += text; } });
     await pyodide.runPythonAsync(code);
-    output.innerHTML += outputBuffer || '<span style="color:var(--green)">&gt;&gt;&gt; Kod muvaffaqiyatli bajarildi (stdout yo\'q)</span>';
+    output.innerHTML += outputBuffer || '<span style="color:var(--green)">&gt;&gt;&gt; Code executed successfully (no stdout)</span>';
   } catch (e) {
     output.innerHTML += '\n<span style="color:var(--red)">Xatolik: ' + escapeHtml(e.message) + '</span>';
   }
@@ -650,13 +650,13 @@ function runArduinoPreview(code, content) {
       '<span style="font-size:10px;color:var(--text3);margin-left:auto">' + pin.mode + ' - ' + (pin.value ? 'HIGH' : 'LOW') + '</span></div>';
   }).join('');
   content.innerHTML = '<div style="height:100%;display:flex;flex-direction:column">' +
-    '<div style="padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:var(--text)">Arduino Simulator</span><span style="font-size:10px;color:var(--text3)">Simulyatsiya - haqiqiy hardware emas</span></div>' +
+    '<div style="padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:var(--text)">Arduino Simulator</span><span style="font-size:10px;color:var(--text3)">Simulation - not real hardware</span></div>' +
     '<div style="flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:16px">' +
       '<div><h4 style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Pin Holati</h4><div style="display:flex;flex-direction:column;gap:4px">' + (pinHTML || '<div style="color:var(--text3);font-size:12px">Pin aniqlanmadi</div>') + '</div></div>' +
       '<div><h4 style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Serial Monitor</h4>' +
       '<div style="background:#0b0b12;border-radius:8px;padding:12px;font-family:var(--mono);font-size:11px;line-height:1.6;color:#d4d4d4;max-height:300px;overflow:auto">' +
-      (serialOutput.map(function (line) { return '<div style="color:' + (line.indexOf('delay') === 0 ? 'var(--yellow)' : line.indexOf('digitalWrite') === 0 ? 'var(--green)' : '#d4d4d4') + '">' + escapeHtml(line) + '</div>'; }).join('') || '<div style="color:var(--border3)">Serial output yo\'q</div>') + '</div></div>' +
-      '<div style="padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px"><p style="font-size:11px;color:var(--text3);line-height:1.6"><strong style="color:var(--text)">Eslatma:</strong> Bu simulyatsiya. Haqiqiy Arduino uchun kodni Arduino IDE da yuklang.</p></div>' +
+      (serialOutput.map(function (line) { return '<div style="color:' + (line.indexOf('delay') === 0 ? 'var(--yellow)' : line.indexOf('digitalWrite') === 0 ? 'var(--green)' : '#d4d4d4') + '">' + escapeHtml(line) + '</div>'; }).join('') || '<div style="color:var(--border3)">No serial output</div>') + '</div></div>' +
+      '<div style="padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px"><p style="font-size:11px;color:var(--text3);line-height:1.6"><strong style="color:var(--text)">Note:</strong> This is a simulation. For real Arduino, upload the code in the Arduino IDE.</p></div>' +
     '</div></div>';
 }
 
@@ -690,7 +690,7 @@ function renderPalette() {
   paletteResults = list;
   if (paletteIndex >= list.length) paletteIndex = 0;
   var box = $('paletteResults');
-  if (!list.length) { box.innerHTML = '<div class="palette-empty">Hech narsa topilmadi</div>'; return; }
+  if (!list.length) { box.innerHTML = '<div class="palette-empty">Nothing found</div>'; return; }
   box.innerHTML = list.map(function (t, i) {
     var color = LANG_COLORS[t.c] || '#4f8cff';
     var fav = favorites.has(t.id);
@@ -1010,7 +1010,7 @@ function init() {
       updateStats();
       initAuth();
     } catch (e) {
-      $('grid').innerHTML = '<div class="empty" role="alert">' + icon('search') + '<p>Templates yuklashda xatolik: ' + escapeHtml(e.message) + '. Sahifani yangilang.</p></div>';
+      $('grid').innerHTML = '<div class="empty" role="alert">' + icon('search') + '<p>Error loading templates: ' + escapeHtml(e.message) + '. Refresh the page.</p></div>';
     }
     hideLoader();
     initMotion();
@@ -1042,8 +1042,8 @@ function init() {
   });
 
   /* ---- TEP (Teno Event Protocol) demo ----
-     Tema almashtirilganda signed TEP event (theme.published) yaratiladi.
-     Backend bo'lmasa ham imzo konsol/vatagda chiqariladi. */
+     A signed TEP event (theme.published) is emitted when the theme changes.
+     Even without a backend, the signature is printed to the console/badge. */
   if (typeof window.TepDemo === 'undefined') return;
   document.addEventListener('tepThemeToggle', function (e) {
     var theme = e.detail && e.detail.theme;

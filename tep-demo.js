@@ -1,10 +1,10 @@
 /* ============================================================
    NestoCodebase - TEP (Teno Event Protocol) minimal demo
    ------------------------------------------------------------
-   Self-contained signing client. Hech qanday dependency yo'q:
-   WebCrypto (browser) yoki Node crypto bilan ishlaydi.
+   Self-contained signing client. No dependencies required:
+   works with WebCrypto (browser) or Node crypto.
 
-   Imzo: HMAC-SHA256 -> base64url, "v1." prefiks (spec/TEP.md).
+   Signature: HMAC-SHA256 -> base64url, with a "v1." prefix (spec/TEP.md).
    Canonical:  tep\n1.0\n<event_id>\n<timestamp>\n<source>\n<type>\n<payload>
    ============================================================ */
 (function (global) {
