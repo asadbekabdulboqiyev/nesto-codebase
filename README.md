@@ -48,6 +48,20 @@
 
 ---
 
+## Popular App Clones
+
+| App | Contents | Files |
+|-----|----------|-------|
+| Instagram Clone | Feed, Stories, Profile, Search, Reels | 5 files |
+| WhatsApp Clone | Chats, Calls, Status | 4 files |
+| Spotify Clone | Home, Search, Library, Player | 5 files |
+| Telegram Clone | Chats, Messages | 2 files |
+| Netflix Clone | Home, Search, Profile | 4 files |
+| TikTok Clone | Feed, Discover, Profile | 4 files |
+| Google-Style Login | Login, Register, Auth Service | 3 files |
+
+---
+
 ## Quick Start
 
 ### Option 1: Use Online
@@ -152,6 +166,41 @@ nesto-codebase/
    - `html-css` — HTML/CSS files (.html)
 
 3. Push to GitHub — the site auto-deploys!
+
+---
+
+## TEP (Teno Event Protocol)
+
+NestoCodebase ships with a **minimal TEP demo** that signs events entirely in the
+browser — no backend required (WebCrypto HMAC-SHA256).
+
+- **`tep-demo.js`** — self-contained TEP client: `TepDemo.emitTepEvent(type, payload)`
+- **`tep-demo.test.js`** — Node verification test (`node tep-demo.test.js`)
+- Switching the theme emits a signed `theme.published` event; the signature is
+  printed to the console.
+- Canonical signing material:
+  `tep\n1.0\n<event_id>\n<timestamp>\n<source>\n<type>\n<payload>`
+- Signature: HMAC-SHA256 `base64url` with a `v1.` prefix — spec: Teno Event
+  Protocol (`spec/TEP.md`)
+
+Sample event types: `theme.published`, `template.selected`.
+
+### Live TEP Event Stream
+
+A compact, signed activity feed that reflects every meaningful action on the
+site in real time:
+
+- **`tep-stream.js`** — `TepStream.track(type, payload)` emits the event, verifies
+  its signature before showing it, and persists the last 50 events in
+  `localStorage` (`tep_stream_v1`).
+- Feed items are labeled **VERIFIED** when the local signature check passes.
+- The first new event lands as soon as the page loads; old events survive a page
+  refresh.
+- Stream event types: `template.selected`, `template.copied`,
+  `template.favorited`, `template.unfavorited`, `template.previewed`,
+  `theme.toggled`.
+- **`tep-stream.test.js`** — Node verification test
+  (`node tep-stream.test.js`).
 
 ---
 
