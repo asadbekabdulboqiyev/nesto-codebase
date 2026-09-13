@@ -149,6 +149,22 @@ flutter-templates-playground/
 
 ---
 
+## TEP (Teno Event Protocol)
+
+NestoCodebase TEP imzolangan eventlar uchun **minimal demo** bilan keladi —
+backend shart emas, hammasi browser'da (WebCrypto HMAC-SHA256).
+
+- **`tep-demo.js`** — mustaqil TEP klient: `TepDemo.emitTepEvent(type, payload)`
+- **`tep-demo.test.js`** — Node verifikatsiya testi (`node tep-demo.test.js`)
+- Tema almashtirilganda `theme.published` event yaratilib, imzo konsolga
+  chiqariladi.
+- Canonical imzo: `tep\n1.0\n<event_id>\n<timestamp>\n<source>\n<type>\n<payload>`
+- Imzo: HMAC-SHA256 `base64url`, `v1.` prefiks — spec: Teno Event Protocol (`spec/TEP.md`)
+
+Event turlari (namuna): `theme.published`, `template.selected`.
+
+---
+
 ## Hissa qo'shish
 
 Hissa qo'shishlar qabul qilinadi! Qanday:

@@ -738,6 +738,7 @@ function toggleTheme() {
   localStorage.setItem(THEME_KEY, light ? 'dark' : 'light');
   updateThemeIcon();
   sync3DTheme();
+  document.dispatchEvent(new CustomEvent('tepThemeToggle', { detail: { theme: light ? 'dark' : 'light' } }));
 }
 function getAccent() { return getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#4f8cff'; }
 function hexToRgb(hex) { var m = hex.replace('#', ''); return { r: parseInt(m.slice(0, 2), 16), g: parseInt(m.slice(2, 4), 16), b: parseInt(m.slice(4, 6), 16) }; }
@@ -1038,6 +1039,24 @@ function init() {
     var first = focusable[0], last = focusable[focusable.length - 1];
     if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
     else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+  });
+
+  /* ---- TEP (Teno Event Protocol) demo ----
+     Tema almashtirilganda signed TEP event (theme.published) yaratiladi.
+     Backend bo'lmasa ham imzo konsol/vatagda chiqariladi. */
+  if (typeof window.TepDemo === 'undefined') return;
+  document.addEventListener('tepThemeToggle', function (e) {
+    var theme = e.detail && e.detail.theme;
+    window.TepDemo.emitTepEvent('theme.published', JSON.stringify({
+      theme: theme || 'unknown',
+      at: new Date().toISOString(),
+    })).then(function (event) {
+      if (window.console && window.console.info) {
+        window.console.info('[TEP] theme.published', event.event_id, event.signature);
+      }
+      var sig = document.getElementById('tep-last-signature');
+      if (sig) sig.textContent = event.signature;
+    }).catch(function () {});
   });
 }
 

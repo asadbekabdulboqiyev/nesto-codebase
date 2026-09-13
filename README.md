@@ -155,6 +155,22 @@ nesto-codebase/
 
 ---
 
+## TEP (Teno Event Protocol)
+
+NestoCodebase TEP signed event imgzosini ko'rsatuvchi **minimal demo** bilan
+keladi — backend talab qilinmaydi, hammasi browser'da (WebCrypto HMAC-SHA256).
+
+- **`tep-demo.js`** — self-contained TEP klient: `TepDemo.emitTepEvent(type, payload)`
+- **`tep-demo.test.js`** — Node verifikatsiya testi (`node tep-demo.test.js`)
+- Tema almashtirilganda `theme.published` event yaratilib, imzo konsolga
+  tushadi.
+- Canonical imzo: `tep\n1.0\n<event_id>\n<timestamp>\n<source>\n<type>\n<payload>`
+- Imzo: HMAC-SHA256 `base64url`, `v1.` prefiks — spec: Teno Event Protocol (`spec/TEP.md`)
+
+Event turlari (namuna): `theme.published`, `template.selected`.
+
+---
+
 ## Contributing
 
 Contributions are welcome! Here's how:
