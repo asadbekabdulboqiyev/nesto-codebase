@@ -157,17 +157,19 @@ nesto-codebase/
 
 ## TEP (Teno Event Protocol)
 
-NestoCodebase TEP signed event imgzosini ko'rsatuvchi **minimal demo** bilan
-keladi — backend talab qilinmaydi, hammasi browser'da (WebCrypto HMAC-SHA256).
+NestoCodebase ships with a **minimal TEP demo** that signs events entirely in the
+browser — no backend required (WebCrypto HMAC-SHA256).
 
-- **`tep-demo.js`** — self-contained TEP klient: `TepDemo.emitTepEvent(type, payload)`
-- **`tep-demo.test.js`** — Node verifikatsiya testi (`node tep-demo.test.js`)
-- Tema almashtirilganda `theme.published` event yaratilib, imzo konsolga
-  tushadi.
-- Canonical imzo: `tep\n1.0\n<event_id>\n<timestamp>\n<source>\n<type>\n<payload>`
-- Imzo: HMAC-SHA256 `base64url`, `v1.` prefiks — spec: Teno Event Protocol (`spec/TEP.md`)
+- **`tep-demo.js`** — self-contained TEP client: `TepDemo.emitTepEvent(type, payload)`
+- **`tep-demo.test.js`** — Node verification test (`node tep-demo.test.js`)
+- Switching the theme emits a signed `theme.published` event; the signature is
+  printed to the console.
+- Canonical signing material:
+  `tep\n1.0\n<event_id>\n<timestamp>\n<source>\n<type>\n<payload>`
+- Signature: HMAC-SHA256 `base64url` with a `v1.` prefix — spec: Teno Event
+  Protocol (`spec/TEP.md`)
 
-Event turlari (namuna): `theme.published`, `template.selected`.
+Sample event types: `theme.published`, `template.selected`.
 
 ---
 
