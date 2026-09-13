@@ -153,7 +153,7 @@ function hashPassword(pass) {
 }
 function register(name, email, pass) {
   var users = getUsers();
-  if (users.find(function (u) { return u.email === email; })) return { ok: false, msg: 'Email allaqachon ro\'yxatdan o\'tgan' };
+  if (users.find(function (u) { return u.email === email; })) return { ok: false, msg: 'Email is already registered' };
   var user = { id: Date.now().toString(36), name: name, email: email, pass: hashPassword(pass), created: new Date().toISOString() };
   users.push(user); saveUsers(users);
   currentUser = { id: user.id, name: user.name, email: user.email };
@@ -229,21 +229,20 @@ function toggleFav(id) {
   updateFavBtn();
   if (category === 'favorites') { renderSidebar(); renderGrid(true); }
   else { renderSidebar(); var btn = document.querySelector('.card .fav-heart[data-id="' + id + '"]'); if (btn) btn.outerHTML = heartButtonHTML(id, added); }
-  showToast(added ? 'Added to favorites' : 'Removed from favorites');
+showToast(added ? 'Added to favorites' : 'Removed from favorites');
+  if (window.TepStream) TepStream.track(added ? 'template.favorited' : 'template.unfavorited', { template: id });
 }
 function updateFavBtn() {
   var btn = $('favBtn');
   if (!btn) return;
-  var on = !!(currentTemplate && favorites.has(currentTemplate.id));
-  btn.classList.toggle('on', on);
-  btn.setAttribute('aria-label', on ? 'Remove from favorites' : 'Add to favorites');
-  btn.innerHTML = heartIcon(on) + (on ? 'Saved' : 'Save');
+  btn.classList.toggle('on', favorites.has(currentTemplate && currentTemplate.id));
+  btn.innerHTML = heartIcon(favorites.has(currentTemplate && currentTemplate.id)) + (favorites.has(currentTemplate && currentTemplate.id) ? 'Saved' : 'Save');
 }
 
 function loadRecent() { try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch (e) { return []; } }
 function saveRecent() { localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(0, 8))); }
 function trackRecent(id) { recent = recent.filter(function (x) { return x !== id; }); recent.unshift(id); saveRecent(); renderRecent(); }
-function clearRecent() { recent = []; saveRecent(); renderRecent(); showToast('Tarix tozalandi'); }
+function clearRecent() { recent = []; saveRecent(); renderRecent(); showToast('History cleared'); }
 function renderRecent() {
   var sec = $('recentSection'), row = $('recentRow');
   var items = recent.map(function (id) {
@@ -388,6 +387,7 @@ function openModal(id) {
   $('modal').classList.add('on');
   document.body.style.overflow = 'hidden';
   trackRecent(id);
+  if (window.TepStream) TepStream.track('template.selected', { template: currentTemplate.id, name: currentTemplate.n, lang: currentTemplate.c });
 }
 function closeModal() {
   $('modal').classList.remove('on');
@@ -431,6 +431,7 @@ function showPreview() {
   }
   ps.hidden = false;
   hideCode();
+  if (window.TepStream) TepStream.track('template.previewed', { template: currentTemplate.id, name: currentTemplate.n });
 }
 function showInstructions() {
   if (!currentTemplate) return;
@@ -489,7 +490,7 @@ function hlTokens(line, kws) {
 }
 
 /* ---------------- Copy / Download / Export ---------------- */
-function copyCode() { if (!currentTemplate) return; safeWriteText(currentTemplate.f[currentFileIndex].c).then(function () { showToast('Nusxalandi'); }).catch(function () { showToast('Xatolik'); }); }
+function copyCode() { if (!currentTemplate) return; safeWriteText(currentTemplate.f[currentFileIndex].c).then(function () { showToast('Copied'); if (window.TepStream) TepStream.track('template.copied', { template: currentTemplate.id, file: currentTemplate.f[currentFileIndex].p }); }).catch(function () { showToast('Error'); }); }
 function copyAll() {
   if (!currentTemplate) return;
   var all = currentTemplate.f.map(function (f) { return '// ' + f.p + '\n' + f.c; }).join('\n\n');
@@ -499,7 +500,7 @@ function copyTemplate(id) {
   var t = templates.find(function (x) { return x.id === id; });
   if (!t) return;
   var all = t.f.map(function (f) { return '// ' + f.p + '\n' + f.c; }).join('\n\n');
-  safeWriteText(all).then(function () { showToast('Nusxalandi'); }).catch(function () { showToast('Xatolik'); });
+  safeWriteText(all).then(function () { showToast('Copied'); }).catch(function () { showToast('Error'); });
 }
 function downloadFile() {
   if (!currentTemplate) return;
@@ -589,6 +590,7 @@ function runLivePreview() {
   }
   $('previewOverlay').classList.add('on');
   document.body.style.overflow = 'hidden';
+  if (window.TepStream) TepStream.track('template.previewed', { template: currentTemplate.id });
 }
 function closePreviewOverlay() {
   $('previewOverlay').classList.remove('on');
@@ -619,7 +621,7 @@ async function executePython(code, output) {
     await pyodide.runPythonAsync(code);
     output.innerHTML += outputBuffer || '<span style="color:var(--green)">&gt;&gt;&gt; Code executed successfully (no stdout)</span>';
   } catch (e) {
-    output.innerHTML += '\n<span style="color:var(--red)">Xatolik: ' + escapeHtml(e.message) + '</span>';
+    output.innerHTML += '\n<span style="color:var(--red)">Error: ' + escapeHtml(e.message) + '</span>';
   }
 }
 function runArduinoPreview(code, content) {

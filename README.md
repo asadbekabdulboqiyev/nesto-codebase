@@ -185,6 +185,23 @@ browser — no backend required (WebCrypto HMAC-SHA256).
 
 Sample event types: `theme.published`, `template.selected`.
 
+### Live TEP Event Stream
+
+A compact, signed activity feed that reflects every meaningful action on the
+site in real time:
+
+- **`tep-stream.js`** — `TepStream.track(type, payload)` emits the event, verifies
+  its signature before showing it, and persists the last 50 events in
+  `localStorage` (`tep_stream_v1`).
+- Feed items are labeled **VERIFIED** when the local signature check passes.
+- The first new event lands as soon as the page loads; old events survive a page
+  refresh.
+- Stream event types: `template.selected`, `template.copied`,
+  `template.favorited`, `template.unfavorited`, `template.previewed`,
+  `theme.toggled`.
+- **`tep-stream.test.js`** — Node verification test
+  (`node tep-stream.test.js`).
+
 ---
 
 ## Contributing

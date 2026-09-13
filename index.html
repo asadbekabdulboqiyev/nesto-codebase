@@ -356,9 +356,20 @@
 </div>
 </div>
 
+<div class="tep-stream" id="tepStream" aria-label="TEP event stream">
+  <div class="tep-stream-head" id="tepStreamHead" role="button" tabindex="0" aria-expanded="false" aria-controls="tepStreamBody">
+    <span class="tep-pulse" aria-hidden="true"></span>
+    <span class="tep-title">TEP Event Stream</span>
+    <span class="tep-count" id="tepCount">0</span>
+    <svg class="tep-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="tep-stream-body" id="tepStreamBody" role="log" aria-live="polite"></div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 <script src="tep-demo.js" defer></script>
+<script src="tep-stream.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>
